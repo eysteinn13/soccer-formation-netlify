@@ -339,157 +339,92 @@ function addPlayerWithNumber(team, isGoalie, number, left, top) {
 }
 
 async function analyzeSetup() {
-    // Get all players and their positions
-    const players = document.querySelectorAll('.player');
-    const pitch = document.querySelector('.pitch-container');
-    const pitchRect = pitch.getBoundingClientRect();
-    
-    // Gather data about the setup
-    const setupData = {
-        attackingTeam: {
-            players: [],
-            cornerTaker: null
-        },
-        defendingTeam: {
-            players: []
-        },
-        pitch: {
-            width: pitchRect.width,
-            height: pitchRect.height
-        }
-    };
-    
-    players.forEach(player => {
-        const rect = player.getBoundingClientRect();
-        const number = parseInt(player.textContent);
-        const isTeam1 = player.classList.contains('team1') || player.classList.contains('goalie1');
-        const team = isTeam1 ? 'team1' : 'team2';
-        const isGoalie = player.classList.contains('goalie1') || player.classList.contains('goalie2');
-        
-        // Calculate relative position (0-1)
-        const x = (rect.left - pitchRect.left) / pitchRect.width;
-        const y = (rect.top - pitchRect.top) / pitchRect.height;
-        
-        const playerData = {
-            number,
-            position: { x, y },
-            attributes: playerAttributes[team][number],
-            isGoalie
-        };
-        
-        // Identify corner kick taker (rightmost attacking player)
-        if (isTeam1) {
-            if (!setupData.attackingTeam.cornerTaker || x > setupData.attackingTeam.cornerTaker.position.x) {
-                setupData.attackingTeam.cornerTaker = playerData;
-            }
-            setupData.attackingTeam.players.push(playerData);
-        } else {
-            setupData.defendingTeam.players.push(playerData);
-        }
-    });
-    
-    // Create analysis modal
+    // Create the analysis modal
     const modal = document.createElement('div');
     modal.className = 'analysis-modal';
     modal.innerHTML = `
         <div class="analysis-content">
-            <h2>Setup Analysis</h2>
             <div class="analysis-loading">
                 <div class="spinner"></div>
-                <p>Analyzing setup...</p>
+                <p>Analyzing corner kick setup...</p>
             </div>
-            <div class="analysis-result" style="display: none;"></div>
-            <button onclick="this.parentElement.parentElement.remove()" class="close-button">Close</button>
         </div>
     `;
     document.body.appendChild(modal);
-    
+
     try {
-        // Prepare the prompt for Claude
-        const cornerTaker = setupData.attackingTeam.cornerTaker;
-        const playersInBox = setupData.attackingTeam.players.filter(p => 
-            p.position.x > 0.6 && // In the final third
-            !p.isGoalie && // Not the goalkeeper
-            p !== cornerTaker // Not the corner taker
-        );
-        
-        const prompt = `Analyze this corner kick setup:
+        // Get all players and their positions
+        const players = document.querySelectorAll('.player');
+        const playerData = Array.from(players).map(player => {
+            const rect = player.getBoundingClientRect();
+            const pitch = document.querySelector('.pitch').getBoundingClientRect();
+            const team = player.classList.contains('team1') || player.classList.contains('goalie1') ? 1 : 2;
+            const number = parseInt(player.textContent);
+            const attributes = playerAttributes[`team${team}`][number] || {};
+            
+            return {
+                team,
+                number,
+                name: attributes.name || `Player ${number}`,
+                attributes: {
+                    height: attributes.height || '',
+                    heading: attributes.heading || '',
+                    jumping: attributes.jumping || '',
+                    strength: attributes.strength || ''
+                },
+                position: {
+                    x: ((rect.left + rect.width/2) - pitch.left) / pitch.width * 100,
+                    y: ((rect.top + rect.height/2) - pitch.top) / pitch.height * 100
+                }
+            };
+        });
 
-Corner Taker: ${cornerTaker.attributes.name} (${cornerTaker.number})
-- Height: ${cornerTaker.attributes.height}cm
-- Heading: ${cornerTaker.attributes.heading}/100
-- Jumping: ${cornerTaker.attributes.jumping}/100
-- Strength: ${cornerTaker.attributes.strength}/100
+        // Prepare the prompt
+        const prompt = `Analyze this corner kick setup and provide tactical insights. Here's the data:
 
-Attacking Players in Box (${playersInBox.length}):
-${playersInBox.map(p => `- ${p.attributes.name} (${p.number}): Height ${p.attributes.height}cm, Heading ${p.attributes.heading}/100, Jumping ${p.attributes.jumping}/100, Strength ${p.attributes.strength}/100`).join('\n')}
+Team 1 (Liverpool, Blue) is attacking, Team 2 (Arsenal, Red) is defending.
+${JSON.stringify(playerData, null, 2)}
 
-Defending Players:
-${setupData.defendingTeam.players.map(p => `- ${p.attributes.name} (${p.number}): Height ${p.attributes.height}cm, Heading ${p.attributes.heading}/100, Jumping ${p.attributes.jumping}/100, Strength ${p.attributes.strength}/100`).join('\n')}
+Please analyze:
+1. The positioning of attacking players
+2. The defensive setup
+3. Key matchups based on player attributes (height, heading, jumping, strength)
+4. Potential threats and opportunities
+5. Suggested improvements for both teams
 
-Please provide a tactical analysis of this corner kick setup, including:
-1. Strengths and weaknesses of the attacking formation
-2. Potential threats from the defending team
-3. Suggested improvements or alternative strategies
-4. Statistical probability of success based on player attributes
-5. Specific recommendations for the corner taker
+Format your response in markdown.`;
 
-Format the response in a clear, structured way with sections and bullet points.`;
-
-        // Make the API call to Claude
+        // Send the analysis request to our Netlify function
         const response = await fetch('/.netlify/functions/analyze', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                prompt: prompt
-            })
+            body: JSON.stringify({ prompt })
         });
 
         if (!response.ok) {
-            throw new Error('API call failed');
+            throw new Error('Analysis request failed');
         }
 
         const data = await response.json();
-        const analysisResult = modal.querySelector('.analysis-result');
-        const loadingIndicator = modal.querySelector('.analysis-loading');
         
-        // Convert markdown to HTML using marked
-        const htmlContent = marked.parse(data.completion);
-        
-        analysisResult.innerHTML = `
-            <div class="analysis-section">
-                <div class="analysis-text">${htmlContent}</div>
-            </div>
+        // Update the modal with the analysis
+        const content = modal.querySelector('.analysis-content');
+        content.innerHTML = `
+            <button class="close-button" onclick="this.closest('.analysis-modal').remove()">Close</button>
+            <div class="analysis-text">${marked.parse(data.analysis)}</div>
         `;
-        
-        loadingIndicator.style.display = 'none';
-        analysisResult.style.display = 'block';
+
     } catch (error) {
-        console.error('Analysis failed:', error);
-        const analysisResult = modal.querySelector('.analysis-result');
-        const loadingIndicator = modal.querySelector('.analysis-loading');
-        
-        let errorMessage = 'Failed to analyze the setup. ';
-        if (error.message.includes('401')) {
-            errorMessage += 'Invalid API key. Please check your API key and try again.';
-        } else if (error.message.includes('429')) {
-            errorMessage += 'Rate limit exceeded. Please try again later.';
-        } else if (error.message.includes('500')) {
-            errorMessage += 'Server error. Please try again later.';
-        } else {
-            errorMessage += 'Please check your connection and try again.';
-        }
-        
-        analysisResult.innerHTML = `
-            <div class="analysis-section">
-                <h3>Error</h3>
-                <p>${errorMessage}</p>
+        console.error('Analysis error:', error);
+        const content = modal.querySelector('.analysis-content');
+        content.innerHTML = `
+            <button class="close-button" onclick="this.closest('.analysis-modal').remove()">Close</button>
+            <div class="analysis-text">
+                <h2>Error</h2>
+                <p>Sorry, there was an error analyzing the setup. Please try again later.</p>
             </div>
         `;
-        
-        loadingIndicator.style.display = 'none';
-        analysisResult.style.display = 'block';
     }
 } 
