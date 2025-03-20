@@ -34,7 +34,7 @@ exports.handler = async function(event, context) {
         console.log('Analyzing setup with prompt:', prompt.substring(0, 100) + '...');
 
         const message = await anthropic.messages.create({
-            model: 'claude-3-sonnet-20240229',
+            model: 'claude-3-7-sonnet-20250219',
             max_tokens: 1000,
             messages: [{
                 role: 'user',
