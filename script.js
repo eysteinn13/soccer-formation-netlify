@@ -173,34 +173,34 @@ function clearPlayers() {
 }
 
 function initializeTeams() {
-    // Liverpool (Team 1) - Blue
+    // Team 1 (Blue)
     playerAttributes.team1 = {
-        1: { name: "Alisson", height: 193, heading: 85, jumping: 88, strength: 82 },
-        66: { name: "Alexander-Arnold", height: 180, heading: 72, jumping: 78, strength: 75 },
-        4: { name: "Van Dijk", height: 193, heading: 92, jumping: 90, strength: 93 },
-        5: { name: "Konaté", height: 194, heading: 85, jumping: 87, strength: 86 },
-        26: { name: "Robertson", height: 178, heading: 75, jumping: 80, strength: 76 },
-        6: { name: "Thiago", height: 174, heading: 65, jumping: 72, strength: 68 },
-        11: { name: "Salah", height: 175, heading: 78, jumping: 83, strength: 76 },
-        8: { name: "Szoboszlai", height: 186, heading: 78, jumping: 82, strength: 79 },
-        9: { name: "Núñez", height: 187, heading: 86, jumping: 88, strength: 84 },
-        10: { name: "Mac Allister", height: 176, heading: 70, jumping: 75, strength: 72 },
-        7: { name: "Díaz", height: 178, heading: 73, jumping: 85, strength: 71 }
+        1: { name: "Kristján Sigurðsson", height: 188, heading: 75, jumping: 78, strength: 76 },
+        2: { name: "Bjarni Ólafsson", height: 182, heading: 68, jumping: 72, strength: 70 },
+        4: { name: "Gunnar Magnússon", height: 190, heading: 82, jumping: 80, strength: 84 },
+        5: { name: "Einar Jónsson", height: 188, heading: 78, jumping: 77, strength: 79 },
+        6: { name: "Arnar Þórsson", height: 176, heading: 65, jumping: 74, strength: 68 },
+        7: { name: "Daði Bergsson", height: 175, heading: 64, jumping: 76, strength: 66 },
+        8: { name: "Stefán Árnason", height: 183, heading: 72, jumping: 75, strength: 73 },
+        9: { name: "Óskar Halldórsson", height: 185, heading: 76, jumping: 78, strength: 77 },
+        10: { name: "Þórður Guðmundsson", height: 178, heading: 68, jumping: 73, strength: 69 },
+        11: { name: "Viktor Karlsson", height: 180, heading: 70, jumping: 75, strength: 71 },
+        14: { name: "Baldur Björnsson", height: 181, heading: 71, jumping: 74, strength: 72 }
     };
 
-    // Arsenal (Team 2) - Red
+    // Team 2 (Red)
     playerAttributes.team2 = {
-        22: { name: "Raya", height: 183, heading: 75, jumping: 82, strength: 75 },
-        4: { name: "White", height: 186, heading: 78, jumping: 80, strength: 78 },
-        2: { name: "Saliba", height: 192, heading: 85, jumping: 84, strength: 85 },
-        6: { name: "Gabriel", height: 190, heading: 86, jumping: 85, strength: 87 },
-        35: { name: "Zinchenko", height: 175, heading: 70, jumping: 75, strength: 72 },
-        41: { name: "Rice", height: 185, heading: 83, jumping: 85, strength: 86 },
-        7: { name: "Saka", height: 178, heading: 72, jumping: 80, strength: 74 },
-        8: { name: "Ødegaard", height: 178, heading: 68, jumping: 75, strength: 70 },
-        9: { name: "Jesus", height: 175, heading: 80, jumping: 85, strength: 78 },
-        29: { name: "Havertz", height: 189, heading: 84, jumping: 83, strength: 82 },
-        11: { name: "Martinelli", height: 176, heading: 75, jumping: 84, strength: 73 }
+        1: { name: "Pétur Guðjónsson", height: 186, heading: 74, jumping: 76, strength: 75 },
+        3: { name: "Helgi Sveinsson", height: 184, heading: 73, jumping: 75, strength: 74 },
+        4: { name: "Jóhann Einarsson", height: 189, heading: 80, jumping: 78, strength: 82 },
+        5: { name: "Sigurður Kristjánsson", height: 187, heading: 77, jumping: 76, strength: 78 },
+        6: { name: "Aron Þorsteinsson", height: 177, heading: 66, jumping: 73, strength: 69 },
+        7: { name: "Kári Atlason", height: 174, heading: 63, jumping: 75, strength: 65 },
+        8: { name: "Brynjar Gunnarsson", height: 182, heading: 71, jumping: 74, strength: 72 },
+        9: { name: "Andri Marinósson", height: 184, heading: 75, jumping: 77, strength: 76 },
+        10: { name: "Haukur Ingimarsson", height: 179, heading: 69, jumping: 72, strength: 70 },
+        11: { name: "Dagur Hilmarsson", height: 178, heading: 67, jumping: 74, strength: 68 },
+        15: { name: "Róbert Sigurðarson", height: 180, heading: 70, jumping: 73, strength: 71 }
     };
 
     // Update the attributes tables
@@ -213,49 +213,49 @@ function initializeTeams() {
 function setupCornerKick() {
     clearPlayers();
     
-    // Add attacking team players (Team 1 - Liverpool)
+    // Add attacking team players (Team 1 - Blue)
     // Goalie
     addPlayerWithNumber(1, true, 1, 50, 300);
     
     // Players around the middle of the field
-    addPlayerWithNumber(1, false, 66, 350, 250);  // TAA
-    addPlayerWithNumber(1, false, 4, 400, 400);   // Van Dijk
+    addPlayerWithNumber(1, false, 2, 350, 250);
+    addPlayerWithNumber(1, false, 4, 400, 400);
     
     // Players slightly in front
-    addPlayerWithNumber(1, false, 5, 480, 220);   // Konaté
-    addPlayerWithNumber(1, false, 26, 500, 350);  // Robertson
+    addPlayerWithNumber(1, false, 5, 480, 220);
+    addPlayerWithNumber(1, false, 6, 500, 350);
     
     // Players in the box
-    addPlayerWithNumber(1, false, 6, 650, 200);   // Thiago
-    addPlayerWithNumber(1, false, 11, 680, 280);  // Salah
-    addPlayerWithNumber(1, false, 8, 700, 360);   // Szoboszlai
-    addPlayerWithNumber(1, false, 9, 630, 320);   // Núñez
-    addPlayerWithNumber(1, false, 10, 600, 250);  // Mac Allister
+    addPlayerWithNumber(1, false, 7, 650, 200);
+    addPlayerWithNumber(1, false, 8, 680, 280);
+    addPlayerWithNumber(1, false, 9, 700, 360);
+    addPlayerWithNumber(1, false, 10, 630, 320);
+    addPlayerWithNumber(1, false, 11, 600, 250);
     
     // Corner kick taker
-    addPlayerWithNumber(1, false, 7, 780, 0);     // Díaz
+    addPlayerWithNumber(1, false, 14, 780, 0);
     
-    // Add defending team players (Team 2 - Arsenal)
+    // Add defending team players (Team 2 - Red)
     // Goalkeeper
-    addPlayerWithNumber(2, true, 22, 765, 300);   // Raya
+    addPlayerWithNumber(2, true, 1, 765, 300);
     
     // Defenders in position
-    addPlayerWithNumber(2, false, 4, 750, 250);   // White
-    addPlayerWithNumber(2, false, 2, 750, 350);   // Saliba
-    addPlayerWithNumber(2, false, 6, 720, 220);   // Gabriel
-    addPlayerWithNumber(2, false, 35, 720, 380);  // Zinchenko
+    addPlayerWithNumber(2, false, 3, 750, 250);
+    addPlayerWithNumber(2, false, 4, 750, 350);
+    addPlayerWithNumber(2, false, 5, 720, 220);
+    addPlayerWithNumber(2, false, 6, 720, 380);
     
     // More defenders in the box
-    addPlayerWithNumber(2, false, 41, 700, 250);  // Rice
-    addPlayerWithNumber(2, false, 7, 700, 350);   // Saka
-    addPlayerWithNumber(2, false, 8, 650, 300);   // Ødegaard
+    addPlayerWithNumber(2, false, 7, 700, 250);
+    addPlayerWithNumber(2, false, 8, 700, 350);
+    addPlayerWithNumber(2, false, 9, 650, 300);
     
     // Midfielders helping on defense
-    addPlayerWithNumber(2, false, 9, 600, 200);   // Jesus
-    addPlayerWithNumber(2, false, 29, 600, 400);  // Havertz
+    addPlayerWithNumber(2, false, 10, 600, 200);
+    addPlayerWithNumber(2, false, 11, 600, 400);
     
     // Forward staying up for counter
-    addPlayerWithNumber(2, false, 11, 500, 300);  // Martinelli
+    addPlayerWithNumber(2, false, 15, 500, 300);
 }
 
 function makeDraggable(element) {
@@ -382,7 +382,7 @@ async function analyzeSetup() {
         // Prepare the prompt
         const prompt = `Analyze this corner kick setup and provide tactical insights. Here's the data:
 
-Team 1 (Liverpool, Blue) is attacking, Team 2 (Arsenal, Red) is defending.
+Team 1 (Blue) is attacking, Team 2 (Red) is defending.
 ${JSON.stringify(playerData, null, 2)}
 
 Please analyze:
