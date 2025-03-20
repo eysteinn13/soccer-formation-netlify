@@ -413,7 +413,7 @@ Format your response in markdown.`;
         const content = modal.querySelector('.analysis-content');
         content.innerHTML = `
             <button class="close-button" onclick="this.closest('.analysis-modal').remove()">Close</button>
-            <div class="analysis-text">${marked.parse(data.analysis)}</div>
+            <div class="analysis-text">${marked.parse(data.completion || data.analysis)}</div>
         `;
 
     } catch (error) {
@@ -424,6 +424,7 @@ Format your response in markdown.`;
             <div class="analysis-text">
                 <h2>Error</h2>
                 <p>Sorry, there was an error analyzing the setup. Please try again later.</p>
+                <p class="text-sm text-gray-600">${error.message}</p>
             </div>
         `;
     }
